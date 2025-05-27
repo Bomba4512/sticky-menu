@@ -1,0 +1,58 @@
+<style>
+	/*=========TOPO=========*/
+	#header_menu {
+		position: sticky;
+		top: 0;
+		z-index: 999;
+		transition: opacity 0.4s ease, transform 0.4s ease;
+	}
+	.mostrar_menu {
+		position:fixed !important;
+		opacity: 1;
+		transform: translateY(0);
+		pointer-events: auto;
+		width: 100%;
+		z-index:999;
+	}
+
+	.esconder_menu {
+		position:fixed !important;
+		width: 100%;
+		z-index:999;
+		opacity: 0;
+		transform: translateY(-100%);
+		pointer-events: none;
+	}
+</style>
+<script>
+    let ultimaPosicao = window.scrollY;
+    const menu_lat = document.getElementById("header_menu");
+    const limite = 300; // você pode ajustar esse valor depois de ver os logs
+
+    document.addEventListener('scroll', () => {
+        let atualPosicao = window.scrollY;
+        console.log("Scroll atual:", atualPosicao);
+
+        if (atualPosicao === 0) {
+            menu_lat.classList.remove('mostrar_menu', 'esconder_menu');
+            console.log("Topo da página");
+        } else if (atualPosicao > limite) {
+            if (atualPosicao > ultimaPosicao) {
+                menu_lat.classList.remove('mostrar_menu');
+                menu_lat.classList.add('esconder_menu');
+                console.log('↓↓↓ escondendo');
+            } else {
+                menu_lat.classList.remove('esconder_menu');
+                menu_lat.classList.add('mostrar_menu');
+                console.log('↑↑↑ mostrando');
+            }
+        } else {
+            // Abaixo do limite mas não no topo: garante que o menu esteja visível
+            menu_lat.classList.remove('esconder_menu');
+            menu_lat.classList.add('mostrar_menu');
+            console.log('Abaixo do limite, mas não no topo');
+        }
+
+        ultimaPosicao = atualPosicao;
+    });
+</script>
