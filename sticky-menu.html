@@ -1,58 +1,50 @@
 <style>
-	/*=========TOPO=========*/
-	#header_menu { /*teste3*/
-		position: sticky;
-		top: 0;
-		z-index: 999;
-		transition: opacity 0.4s ease, transform 0.4s ease;
+	#menu_normal,	#menu_sticky {
+		transition: opacity 0.3s ease, visibility 0.3s ease;
 	}
-	.mostrar_menu {
-		position:fixed !important;
-		opacity: 1;
-		transform: translateY(0);
-		pointer-events: auto;
-		width: 100%;
-		z-index:999;
-	}
-
-	.esconder_menu {
-		position:fixed !important;
-		width: 100%;
-		z-index:999;
+	.oculto {
 		opacity: 0;
-		transform: translateY(-100%);
+		visibility: hidden;
 		pointer-events: none;
+	}
+	.visivel {
+		opacity: 1;
+		visibility: visible;
 	}
 </style>
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const menuNormal = document.getElementById("menu_normal");
+    const menuSticky = document.getElementById("menu_sticky");
     let ultimaPosicao = window.scrollY;
-    const menu_lat = document.getElementById("header_menu");
-    const limite = 300; // você pode ajustar esse valor depois de ver os logs
+    const limite = 300;
+
+    // Função auxiliar para aplicar classe
+    function mostrarMenu(menuMostrar, menuEsconder) {
+        menuMostrar.classList.remove("oculto");
+        menuMostrar.classList.add("visivel");
+        menuEsconder.classList.remove("visivel");
+        menuEsconder.classList.add("oculto");
+    }
 
     document.addEventListener('scroll', () => {
-        let atualPosicao = window.scrollY;
-        console.log("Scroll atual:", atualPosicao);
+        const atualPosicao = window.scrollY;
 
-        if (atualPosicao === 0) {
-            menu_lat.classList.remove('mostrar_menu', 'esconder_menu');
-            console.log("Topo da página");
-        } else if (atualPosicao > limite) {
-            if (atualPosicao > ultimaPosicao) {
-                menu_lat.classList.remove('mostrar_menu');
-                menu_lat.classList.add('esconder_menu');
-                console.log('↓↓↓ escondendo');
-            } else {
-                menu_lat.classList.remove('esconder_menu');
-                menu_lat.classList.add('mostrar_menu');
-                console.log('↑↑↑ mostrando');
-            }
+        if (atualPosicao <= limite) {
+            mostrarMenu(menuNormal, menuSticky);
         } else {
-            // Abaixo do limite mas não no topo: garante que o menu esteja visível
-            menu_lat.classList.remove('esconder_menu');
-            menu_lat.classList.add('mostrar_menu');
-            console.log('Abaixo do limite, mas não no topo');
+            if (atualPosicao > ultimaPosicao) {
+                // Descendo - oculta ambos (opcional)
+                menuNormal.classList.add("oculto");
+                menuSticky.classList.add("oculto");
+                menuNormal.classList.remove("visivel");
+                menuSticky.classList.remove("visivel");
+            } else {
+                mostrarMenu(menuSticky, menuNormal);
+            }
         }
 
         ultimaPosicao = atualPosicao;
     });
+});
 </script>
